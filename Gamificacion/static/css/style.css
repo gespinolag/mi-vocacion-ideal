@@ -1,0 +1,32 @@
+:root {
+    --primary-color: #e4e4e4;
+}
+
+body {
+    background-color: var(--primary-color) !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.home-title {
+    color: black;
+    text-align: center;
+}
+
+.custom-btn {
+    font-size: 18px !important;
+    padding: 5px 15px !important;
+}
+
+.navbar {
+    background-color: #222831;
+}
+
+.footer {
+    background: #0E1218;
+    padding: 0.5em 0;
+    color: white;
+    text-align: center;
+    margin-top: auto;
+  }

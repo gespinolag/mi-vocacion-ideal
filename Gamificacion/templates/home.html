@@ -1,0 +1,18 @@
+{% extends "base.html"%}
+{% load static %}
+{% block content%}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-auto">
+                <h1>img.png</h1>
+            </div>
+            <div class="col-auto text-center">
+                <h1 class="home-title">¡Descubre tu vocación <br>de una forma divertida y gratis!</h1>
+                <a class="btn btn-success custom-btn" id="btnHome">Empezar ahora</a>
+            </div>
+        </div>
+    </div>
+</section>
+<div id="registration-url" data-url="{% url 'registration' %}" style="display: none;"></div>
+{% endblock %}
