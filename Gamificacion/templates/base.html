@@ -14,8 +14,8 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="https://png.pngtree.com/png-vector/20230408/ourmid/pngtree-free-demo-banner-design-vector-png-image_6695393.png" alt="Logo" width="100" height="100">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'img/logo-white.png' %}" alt="Logo" width="170">
             </a>
             <a class="btn btn-outline-secondary ms-auto me-2" href="{% url 'home' %}">
                 <i class="bi bi-house"></i> Inicio

@@ -6,22 +6,28 @@
         <div class="row" style="padding: 10px;">
             <h1 class="home-title">¡Registrate para iniciar el test!</h1>
         </div>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" style="padding: 5%;">
             <p class="home-title">Selecciona tu avatar</p>
-            <div class="col-auto">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
-                        Bob
-                    </label>
+            <div class="col-auto text-center">
+                <div class="d-flex align-items-center">
+                    <img src="{% static 'img/bob-avatar.png' %}" alt="Bob" width="170px">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="radioButtonBob" id="btBob">
+                        <label class="form-check-label" for="btBob">
+                            Bob
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="col-auto">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                        Alice
-                    </label>
+            <div class="col-auto text-center">
+                <div class="d-flex align-items-center">
+                    <img src="{% static 'img/alice-avatar.png' %}" alt="Alice" width="170px">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="radioButtonAlice" id="btAlice">
+                        <label class="form-check-label" for="btAlice">
+                            Alice
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -30,7 +36,7 @@
                 <form>
                     <div class="row">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre">
+                            <input type="text" class="form-control" id="userName" placeholder="Ingresa tu nombre">
                         </div>
                     </div>
                     <br>
