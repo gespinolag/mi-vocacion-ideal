@@ -10,12 +10,11 @@
             <div class="col-md d-flex align-items-center">
                 <div class="text-center">
                     <br>
-                    <h1 class="home-title">¡Descubre tu vocación <br>de una forma divertida y gratis!</h1>
-                    <a class="btn btn-success custom-btn" id="btnHome">Empezar ahora</a>
+                    <h1 class="custom-title">¡Descubre tu vocación <br>de una forma divertida y gratis!</h1>
+                    <a class="btn btn-success custom-btn" href="{% url 'registration' %}">Empezar ahora</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<div id="registration-url" data-url="{% url 'registration' %}" style="display: none;"></div>
 {% endblock %}

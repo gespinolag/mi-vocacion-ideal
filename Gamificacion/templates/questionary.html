@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="container mt-5">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <h2 class="custom-title" id="question"></h2>
+        <div class="likert-scale">
+            <div class="likert-item">
+                <input type="radio" id="likert1" name="likert" value="1">
+                <label for="likert1">Totalmente en desacuerdo</label>
+            </div>
+            <div class="likert-item">
+                <input type="radio" id="likert2" name="likert" value="2">
+                <label for="likert2">En desacuerdo</label>
+            </div>
+            <div class="likert-item">
+                <input type="radio" id="likert3" name="likert" value="3">
+                <label for="likert3">Neutral</label>
+            </div>
+            <div class="likert-item">
+                <input type="radio" id="likert4" name="likert" value="4">
+                <label for="likert4">De acuerdo</label>
+            </div>
+            <div class="likert-item">
+                <input type="radio" id="likert5" name="likert" value="5">
+                <label for="likert5">Totalmente de acuerdo</label>
+            </div>
+        </div>
+        <button type="button" class="btn btn-success custom-btn" id="nextBtn">Siguiente</button>
+    </div>
+</section>
+{% endblock %}
