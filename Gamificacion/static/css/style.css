@@ -35,6 +35,19 @@ body {
     animation: progressAnimation 3s linear infinite;
 }
 
+@media (max-width: 767px) {
+    .next-btn {
+        margin-top: 50px;
+        text-align: center;
+    }
+}
+
+@media (min-width: 768px) {
+    .next-btn {
+        text-align: right;
+    }
+}
+
 @keyframes progressAnimation {
     0% { width: 0%; }
     100% { width: 100%; }
@@ -87,4 +100,57 @@ body {
         width: 100%;
         margin: 5px 0;
     }
+}
+
+#loaderSection {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi transparente */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #008000;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+  
+.career-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px;
+    background-color: #0080642c;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.explore-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: dodgerblue;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.explore-button:hover {
+    background-color: #007bff; /* Cambia el color al pasar el mouse sobre el botón */
 }

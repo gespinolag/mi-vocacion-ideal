@@ -78,7 +78,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mivocacionideal',
-        'USER': 'gerardo',
+        'USER': 'root',
         'PASSWORD': '12345678',
         'HOST': 'localhost',
         'PORT': '3306',
@@ -126,3 +126,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# Configuración de sesiones
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # O utiliza otro backend de sesión según tu preferencia
+SESSION_COOKIE_NAME = 'sessionid'

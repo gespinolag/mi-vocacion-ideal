@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% csrf_token %}
+<section>
+    <div class="container">
+        <h1 class="custom-title">¡Felicidades [Nombre]!</h1>
+        <h4 class="custom-title">Has culminado el test satisfactoriamente</h4>
+        <div class="mt-4">
+            <h6 class="custom-title">Aquí puedes ver las posibles carreras que se podrían adaptar a tí:</h6>
+            <!-- aqui agregar carreras nada mas según los resultados obtenidos de los rasgos -->
+            {% if careerSuggestion %}
+            <div class="career-container">
+                {% for career in careerSuggestion %}
+                <div class="career-card">
+                    <h3>{{ career }}</h3>
+                    <!-- Puedes agregar más información sobre cada carrera aquí -->
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No se encontraron carreras sugeridas.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

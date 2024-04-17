@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<section>
+<section id="questionSection">
     <div class="container">
         <div class="container mt-5">
             <div class="progress">
@@ -34,7 +34,12 @@
                 <label for="likert5">Totalmente de acuerdo</label>
             </div>
         </div>
-        <button type="button" class="btn btn-success custom-btn" id="nextBtn">Siguiente</button>
+        <div class="next-btn">
+            <button type="button" class="btn btn-success custom-btn" id="nextBtn" disabled>Siguiente</button>
+        </div>
     </div>
+</section>
+<section id="loaderSection" style="display: none;">
+    <div id="loader" class="loader"></div>
 </section>
 {% endblock %}
