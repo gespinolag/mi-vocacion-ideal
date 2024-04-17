@@ -64,9 +64,17 @@ donde ` 'NAME': 'mivocacionideal'` es el nombre de la base de datos. Puedes crea
 
 ### Ejecución del proyecto
 Puedes utilizar un editor de código como Visual Studio Code o bien el IDE PyCharm para proyectos Python.
-** Linux**
+
+**Linux**
 Teniendo el entorno virtual previamente activado, ejecuta desde un terminal los siguientes comandos:
 - `python3 manage.py makemigrations`
 - `python3 manage.py migrate`
 - `python3 manage.py runserver`
+
+**Windows**
+Teniendo el entorno virtual previamente activado, ejecuta desde un terminal los siguientes comandos:
+- `python manage.py makemigrations`
+- `python manage.py migrate`
+- `python manage.py runserver`
+
 Una vez que el servidor se haya iniciado, puedes abrir en tu navegador la url http://127.0.0.1:8000/

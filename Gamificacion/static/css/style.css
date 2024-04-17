@@ -136,21 +136,3 @@ body {
     background-color: #0080642c;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-.explore-button {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: dodgerblue;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.explore-button:hover {
-    background-color: #007bff; /* Cambia el color al pasar el mouse sobre el botón */
-}
