@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="d-flex flex-column align-items-center">
+            <img src="{% static 'img/avatar-duda.png' %}" alt="Duda sobre función de cálculo" class="img-fluid">
+        </div>
+        <h1 class="custom-title" style="padding: 3%;">Explicación de la función de cálculo de carreras universitarias 🤓</h1>
+        <hr>
+        <div style="font-size: 18px;">
+            <p>
+                La aplicación cuenta con un mecanismo que ayuda a elegir una carrera universitaria, basándose en las respuestas del cuestionario. 
+                Las preguntas tienen relación con los rasgos de personalidad del modelo OCEAN: 
+                <ul>
+                    <li>☑️ Apertura a la experiencia: Imaginativo, creativo, curioso, artístico, explorador, abierto.</li>
+                    <li>☑️ Conciencia: Organizado, responsable, disciplinado, confiable, cuidadoso.</li>
+                    <li>☑️ Extraversión: Sociable, enérgico, activo, comunicativo, amigable, extrovertido.</li>
+                    <li>☑️ Amabilidad: Compasivo, empático, cooperativo, amable, generoso.</li>
+                    <li>☑️ Neuroticismo: Ansioso, inseguro, inestable, irritable, preocupado, nervioso.</li>
+                </ul>
+                y por cada pregunta respondida en la escala de acuerdo/desacuerdo se almacena una puntuación en cada rasgo de personalidad.
+            </p>
+            <p>
+                Además, la aplicación cuenta con una lista de carreras universitarias, donde cada carrera está asociada a uno o más rasgos de personalidad:
+                <ul>
+                    <li>✅ Economía: Apertura a la experiencia, Conciencia, Amabilidad y Extraversión.</li>
+                    <li>✅ Contador Público Nacional: Conciencia y Amabilidad.</li>
+                    <li>✅ Derecho: Conciencia, Amabilidad y Extraversión.</li>
+                    <li>✅ Notariado: Conciencia y Amabilidad.</li>
+                    <li>✅ Medicina: Conciencia, Amabilidad y Neuroticismo</li>
+                    <li>✅ Enfermería: Amabilidad y Neuroticismo.</li>
+                    <li>✅ Odontología: Conciencia y Amabilidad.</li>
+                    <li>✅ Kinesiología y Fisioterapia: Amabilidad, Extraversión y Conciencia.</li>
+                    <li>✅ Bioquímica: Apertura a la experiencia, Conciencia y Amabilidad.</li>
+                    <li>✅ Química y Farmacia: Conciencia y Amabilidad.</li>
+                    <li>✅ Psicología: Amabilidad y Conciencia.</li>
+                    <li>✅ Ingeniería Informática: Apertura a la experiencia, Conciencia y Extraversión.</li>
+                    <li>✅ Ingeniería Química: Apertura a la experiencia, Conciencia y Amabilidad.</li>
+                    <li>✅ Ingeniería Industrial: Apertura a la experiencia, Conciencia y Extraversión. </li>
+                </ul>
+                Seguidamente se calcula una puntuación para cada carrera con sus rasgos asociados a partir de la suma de los valores por rasgos obtenidos en el cuestionario.
+            </p>
+            <p>
+                Finalmente, se muestran las carreras con mayor puntuación conforme al cálculo realizado.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

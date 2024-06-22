@@ -2,25 +2,66 @@
 {% load static %}
 {% block content %}
 {% csrf_token %}
+
 <section>
     <div class="container">
-        <h1 class="custom-title">¡Felicidades [Nombre]!</h1>
+        <h1 class="custom-title">¡Felicidades {{userName}}!</h1>
         <h4 class="custom-title">Has culminado el test satisfactoriamente</h4>
+        <p class="custom-title">Explora las opciones de carreras seleccionadas para tí</p>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <a class="btn btn-success custom-btn" href="{% url 'detalles-de-carreras' %}">Explorar carreras</a>
+        </div>
+        <hr>
+        <p class="custom-title">Información acerca del mecanismo de selección de carreras</p>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <a class="btn btn-success custom-btn" href="{% url 'funcion-de-calculo' %}" target="_blank">Ver más</a>
+        </div>    
+        <hr>
+        <p class="custom-title">De acuerdo a los resultados, estos son algunos detalles de los rasgos de personalidad que presentas:</p>
         <div class="mt-4">
-            <h6 class="custom-title">Aquí puedes ver las posibles carreras que se podrían adaptar a tí:</h6>
+            <!-- {% for rasgo, valor in userResults.items %}
+                <p>{{rasgo}}</p>
+                <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar">{{ valor }} %</div>
+                </div>
+                <br>
+            {% endfor %} -->
+            <br>
+            {{ html_content|safe }}
+
+            <!-- <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%; background-color: rgb(0, 187, 255); color: black;">25%</div>
+            </div>
+            <br>
+            <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%; background-color: rgb(136, 200, 25); color: black;">25%</div>
+            </div>
+            <br>
+            <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%; background-color: rgb(249, 228, 0); color: black;">25%</div>
+            </div>
+            <br>
+            <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%; background-color: rgb(221, 114, 0);">25%</div>
+            </div>
+            <br>
+            <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%; background-color: rgb(255, 0, 0);">25%</div>
+            </div>
+            <br> -->
+            <!-- <h6 class="custom-title">Aquí puedes ver las posibles carreras que se podrían adaptar a tí:</h6> -->
             <!-- aqui agregar carreras nada mas según los resultados obtenidos de los rasgos -->
-            {% if careerSuggestion %}
+            <!-- {% if careerSuggestion %}
             <div class="career-container">
                 {% for career in careerSuggestion %}
                 <div class="career-card">
                     <h3>{{ career }}</h3>
-                    <!-- Puedes agregar más información sobre cada carrera aquí -->
                 </div>
                 {% endfor %}
             </div>
             {% else %}
             <p>No se encontraron carreras sugeridas.</p>
-            {% endif %}
+            {% endif %} -->
         </div>
     </div>
 </section>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section>
+    <div class="container">
+        <h1 class="custom-title">Detalles de carreras sugeridas:</h1>
+        <ul>
+            {% for career in career_details %}
+                <li>
+                    <div class="row" style="padding-top: 1%;">
+                        <div class="col-auto">
+                            <img src="{{ career.avatar }}" alt="Avatar de carrera" style="filter:drop-shadow(3px 5px 3px rgba(0, 0, 0, 0.2)); width: 300px; padding: 2%;">
+                        </div>
+                        <div class="col">
+                            <strong>{{ career.carrera }}</strong>
+                            <p>Título: {{ career.titulo }}</p>
+                            <p>Duración: {{ career.duracion }}</p>
+                            <p>Descripción: {{ career.descripcion }}</p>
+                            <p>
+                                Fuente: 
+                                <a href="https://guaira.uc.edu.py" target="_blank">Página Web UC Guairá</a>.
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endblock %}

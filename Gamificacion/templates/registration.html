@@ -1,54 +1,56 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content%}
+{% block content %}
 <section>
     <div class="container">
         <div class="row" style="padding: 10px;">
-            <h2 class="custom-title">¡Registrate para iniciar el test!</h2>
+            <h2 class="custom-title">¡Regístrate para iniciar el test!</h2>
         </div>
         <div class="row justify-content-center" style="padding: 5%;">
-            <p class="custom-title">Selecciona tu avatar</p>
-            <div class="col-auto text-center">
-                <div class="d-flex align-items-center">
-                    <img src="{% static 'img/bob-avatar.png' %}" alt="Bob" width="170px">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioButtonBob" id="btBob">
-                        <label class="form-check-label" for="btBob">
-                            Bob
-                        </label>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group text-center">
+                    <p class="custom-title">Selecciona tu avatar</p>
+                    <div class="row justify-content-center">
+                        <div class="col-md-3">
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="{% static 'img/bob-avatar.png' %}" alt="Bob" width="170px">
+                                <label class="form-check-label mt-2" for="id_avatar_bob">
+                                    <input class="form-check-input" type="radio" id="id_avatar_bob" name="avatar" value="bob"> Bob
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="{% static 'img/alice-avatar.png' %}" alt="Alice" width="170px">
+                                <label class="form-check-label mt-2" for="id_avatar_alice">
+                                    <input class="form-check-input" type="radio" id="id_avatar_alice" name="avatar" value="alice"> Alice
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-auto text-center">
-                <div class="d-flex align-items-center">
-                    <img src="{% static 'img/alice-avatar.png' %}" alt="Alice" width="170px">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioButtonAlice" id="btAlice">
-                        <label class="form-check-label" for="btAlice">
-                            Alice
-                        </label>
+                <div class="form-group text-center" style="padding: 3%;">
+                    <label for="id_userName" style="padding-bottom: 3%;">Ingresa tu nombre:</label>
+                    <div class="input-group justify-content-center">
+                        <input type="text" class="form-control" id="id_userName" name="userName" placeholder="Ingresa tu nombre" style="max-width: 400px;">
                     </div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary custom-btn">Siguiente</button>
+                </div>
+            </form>
+        </div>
+        {% if form.errors %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="alert alert-danger" role="alert">
+                    <strong>Error:</strong>
+                    Los campos no pueden quedar vacíos, por favor complete los mismos.
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="userName" placeholder="Ingresa tu nombre">
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="form-group" style="text-align: right;">
-                            <button type="submit" class="btn btn-primary custom-btn" name="registrateBtn">Siguiente</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

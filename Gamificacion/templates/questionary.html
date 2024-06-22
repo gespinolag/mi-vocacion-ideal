@@ -2,9 +2,14 @@
 {% load static %}
 {% block content %}
 <section id="questionSection">
+    <h2 class="custom-title" style="padding: 2%;">¡Hola {{userName}}!</h2>
     <div class="container">
-        <div class="container mt-5">
-            <div class="progress">
+        <div class="row" style="text-align: right;">
+            <img src="{% static 'img/sin-estrellas.png' %}" id="starimg" data-star1="{% static 'img/1-estrella.png' %}" data-star2="{% static 'img/2-estrellas.png' %}" data-star3="{% static 'img/3-estrellas.png' %}" alt="Sin estrellas" style="width: 120px; display: block; margin-left: auto;">
+        </div>
+        <div class="container mt-1">
+            <p>Tu progreso:</p>
+            <div class="progress progress-color-transition">
                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
@@ -12,6 +17,7 @@
 
     <div class="container mt-5">
         <h2 class="custom-title" id="question"></h2>
+        <br>
         <div class="likert-scale">
             <div class="likert-item">
                 <input type="radio" id="likert1" name="likert" value="1">

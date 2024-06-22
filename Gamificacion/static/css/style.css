@@ -35,6 +35,33 @@ body {
     animation: progressAnimation 3s linear infinite;
 }
 
+div.progress.progress-color-transition {
+    background: #f2f2f2;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+div.progress.progress-color-transition::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgb(208, 255, 208), transparent);
+    animation: slide 2s linear infinite;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
 @media (max-width: 767px) {
     .next-btn {
         margin-top: 50px;
@@ -135,4 +162,9 @@ body {
     margin: 10px;
     background-color: #0080642c;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.final-progress-bar::before {
+    content: attr(data-width) '%';
+    width: attr(data-width) '%';
 }

@@ -7,6 +7,7 @@ $(document).ready(function() {
     var likertInputs = document.querySelectorAll('input[name="likert"]');
     var nextButton = document.getElementById('nextBtn');
     var selectedLikertBtnValue;
+    var trait;
 
 
     // Solicitud AJAX para cargar preguntas
@@ -17,6 +18,8 @@ $(document).ready(function() {
             questions = data.questions;
             totalQuestions = questions.length;
             showNextQuestion();
+            console.log(questions)
+            console.log(totalQuestions)
         }
     })
 
@@ -34,8 +37,14 @@ $(document).ready(function() {
         currentQuestionIndex++;
         if(currentQuestionIndex < questions.length) {
             $("#question").fadeOut(400, function() {
-                $(this).text(questions[currentQuestionIndex]).fadeIn(400);
+                $(this).text(questions[currentQuestionIndex][1]).fadeIn(400);
+                console.log("Questions: " + questions[currentQuestionIndex][1])
+                trait = questions[currentQuestionIndex][0];
+                console.log("Rasgo: " + trait)
             });
+            // Guarda el rasgo de personalidad de la pregunta actual
+            
+            
             document.querySelectorAll('input[name="likert"]').forEach((radio) => {
                 radio.checked = false;
                 checkLikertSelection();
@@ -47,7 +56,7 @@ $(document).ready(function() {
             document.querySelectorAll('input[name="likert"]').forEach((radio) => {
                 radio.disabled = true;
             });
-
+    
             setTimeout(function(){  
                 document.getElementById('loader').style.display = 'none';
                 window.location.href = "/results/";
@@ -80,7 +89,7 @@ $(document).ready(function() {
 
     $('input[name="likert"]').on('change', function() {
         selectedLikertBtnValue = $(this).val();
-    });
+    });    
 
     $('#nextBtn').on('click', function() {
         if(selectedLikertBtnValue !== null){
@@ -89,7 +98,26 @@ $(document).ready(function() {
                 type: 'POST',
                 data: {
                     value: selectedLikertBtnValue,
-                    index: currentQuestionIndex
+                    endQuestionary : currentQuestionIndex === questions.length,
+                    trait: trait
+                },
+                success: function(data){
+                    console.log(data)
+                    // console.log("Valor de Likert: " + selectedLikertBtnValue)
+                    console.log("Numero de pregunta: " + currentQuestionIndex)
+                    console.log("Mitad de preguntas: " + questions.length/2);
+                    // console.log("Rasgo de la pregunta: " + trait)
+                    var estrellaImg = document.getElementById("starimg");
+                    var star1 = estrellaImg.getAttribute("data-star1");
+                    var star2 = estrellaImg.getAttribute("data-star2");
+                    var star3 = estrellaImg.getAttribute("data-star3");
+                    if(currentQuestionIndex == 1){
+                        estrellaImg.setAttribute("src", star1);
+                    } else if (currentQuestionIndex == (questions.length/2)){
+                        estrellaImg.setAttribute("src", star2)
+                    } else if (currentQuestionIndex == questions.length - 1) {
+                        estrellaImg.setAttribute("src", star3)
+                    }
                 }
             });
         }
