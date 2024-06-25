@@ -19,6 +19,10 @@ body {
     padding: 5px 15px !important;
 }
 
+.nav-btn {
+    color: white !important;
+}
+
 .navbar {
     background-color: #222831;
 }

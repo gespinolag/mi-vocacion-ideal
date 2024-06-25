@@ -59,7 +59,7 @@ $(document).ready(function() {
     
             setTimeout(function(){  
                 document.getElementById('loader').style.display = 'none';
-                window.location.href = "/results/";
+                window.location.href = "/resultados/";
             }, 3000);
         }
     }

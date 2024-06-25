@@ -3,10 +3,11 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('registration/', views.registration, name='registration'),
-    path('test/', views.test, name='test'),
-    path('obtener-preguntas/', views.getQuestions, name='obtener-preguntas'),
-    path('enviar-resultados/', views.questionsResults, name='enviar-resultados'),
-    path('results/', views.finalResults, name='results'),
+    path('cuestionario/', views.questionary, name='questionary'),
+    path('obtener-preguntas/', views.questions, name='obtener-preguntas'),
+    path('enviar-resultados/', views.sendResults, name='enviar-resultados'),
+    path('resultados/', views.finalResults, name='resultados'),
     path('detalles-de-carreras/', views.careerDetails, name='detalles-de-carreras'),
-    path('funcion-de-calculo/', views.aboutCalculationFunction, name='funcion-de-calculo')
+    path('funcion-de-calculo/', views.aboutCalculationFunction, name='funcion-de-calculo'),
+    path('detalles-de-rasgos-de-personalidad/', views.userTraitDetails, name='detalles-de-rasgos-de-personalidad')
 ]

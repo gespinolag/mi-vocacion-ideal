@@ -2,7 +2,10 @@
 {% load static %}
 {% block content %}
 <section id="questionSection">
-    <h2 class="custom-title" style="padding: 2%;">¡Hola {{userName}}!</h2>
+    <div class="d-flex flex-column align-items-center m-3">
+        <img src="{{avatar}}" alt="Avatar del usuario" style="width: 100px;">
+        <h2 class="custom-title" style="padding-top: 1%;">¡Hola {{userName}}!</h2>
+    </div>
     <div class="container">
         <div class="row" style="text-align: right;">
             <img src="{% static 'img/sin-estrellas.png' %}" id="starimg" data-star1="{% static 'img/1-estrella.png' %}" data-star2="{% static 'img/2-estrellas.png' %}" data-star3="{% static 'img/3-estrellas.png' %}" alt="Sin estrellas" style="width: 120px; display: block; margin-left: auto;">
@@ -43,6 +46,7 @@
         <div class="next-btn">
             <button type="button" class="btn btn-success custom-btn" id="nextBtn" disabled>Siguiente</button>
         </div>
+        <br>
     </div>
 </section>
 <section id="loaderSection" style="display: none;">

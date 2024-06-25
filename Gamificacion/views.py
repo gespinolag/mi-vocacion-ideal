@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse
 from .forms import *
 import random
 
@@ -151,7 +153,7 @@ careersInformation = [
 ]
 
 # Preguntas
-questions = {
+questionList = {
     "Apertura a la experiencia" : [
         "¿Te gustan las actividades creativas como escribir o pintar?",
         "¿Te sientes a gusto al conversar con personas que tienen ideas y experiencias diferentes a las tuyas?",
@@ -237,14 +239,16 @@ traitDetails = {
 # Create your views here.
 
 def home(request):
+    request.session['last_question'] = False
+    if 'trait_sums' in request.session:
+        del request.session['trait_sums']
     if request.method == "POST" and "btnStartNow" in request.POST:
-        request.session['final_questionary'] = False
         return redirect('registration')
     else:
+        request.session.flush()
         return render(request, 'home.html')
 
 def registration(request):
-    request.session['end_questionary'] = False
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -253,108 +257,214 @@ def registration(request):
             if avatar and userName:
                 request.session['avatar'] = avatar
                 request.session['userName'] = userName
-                return redirect('/test/')
+                return redirect('/cuestionario/')
     else:
         form = RegistrationForm()
     return render(request, 'registration.html', {'form' : form})
 
-def test(request):
+def questionary(request):
     if request.method == "GET":
         if 'avatar' in request.session and 'userName' in request.session:
-            avatar = request.session['avatar']
+            avatar = request.session.get('avatar', '')
             userName = request.session['userName']
             request.session['userNameFinal'] = userName
-            request.session['values_list'] = []
-            request.session['end_questionary'] = False
-            request.session['trait_sums'] = {"Apertura a la experiencia": 0, "Conciencia": 0, "Extraversión": 0, "Amabilidad": 0, "Neuroticismo": 0}
-            # del request.session['traitSums']
+            request.session['userAvatarFinal'] = avatar
+            #request.session['trait_sums'] = {0, 0, 0, 0, 0}
+            #del request.session['trait_sums']
+            if 'trait_sums' in request.session:
+                del request.session['trait_sums']
+            if avatar == 'bob':
+                avatarFinal = '/static/img/bob-avatar-pq.png'
+            else:
+                avatarFinal = '/static/img/alice-avatar-pq.png'
 
             del request.session['avatar']
             del request.session['userName']
             
-            return render(request, 'questionary.html', {'avatar': avatar, 'userName': userName})
+            return render(request, 'questionary.html', {'avatar': avatarFinal, 'userName': userName})
         else:
             return redirect('registration')    
     else:
         return redirect('registration')
 
-def getQuestions(request):
+def questions(request):
     # Aplana el diccionario a una lista de tuplas
-    flat_questions = [(trait, question) for trait, questions in questions.items() for question in questions]
+    flat_questions = [(trait, question) for trait, questions in questionList.items() for question in questions]
     random.shuffle(flat_questions)
     
     return JsonResponse({'questions': flat_questions})
 
 @csrf_exempt
-def questionsResults(request):
+def sendResults(request):
+    lastQuestion = False
     if request.method == 'POST':
-        value = int(request.POST.get('value'))
-        trait = request.POST.get('trait')
-        endQuestionary = request.POST.get('endQuestionary')
-        print("Value = ", value)
-        print("Trait = ", trait)
-        print("Final del cuestionario: ", endQuestionary)
+        value = int(request.POST.get('value')) # obtenemos el valor de la escala de Likert
+        trait = request.POST.get('trait') # obtenemos el rasgo de acuerdo al valor
+        endQuestionary = request.POST.get('endQuestionary') # valor para saber si el cuestionario finalizó
+        request.session['end_questionary'] = endQuestionary # se guarda en sesión valor para saber si el cuestionario finalizó
 
-        trait_sums = request.session.get('trait_sums', {"Apertura a la experiencia": 0, "Conciencia": 0, "Extraversión": 0, "Amabilidad": 0, "Neuroticismo": 0})
-        trait_sums[trait] += value
-        request.session['trait_sums'] = trait_sums
-        print("Trait sums = ", trait_sums)
-
-        values_list = list(trait_sums.values())
-        request.session['values_list'] = values_list
-        request.session['end_questionary'] = endQuestionary
-        print("Values list = ", values_list)
-
+        # Mapeo de los rasgos a las posiciones del array
+        trait_map = {
+            "Apertura a la experiencia": 0,
+            "Conciencia": 1,
+            "Extraversión": 2,
+            "Amabilidad": 3,
+            "Neuroticismo": 4
+        }
         
-        return JsonResponse({'message': 'Valor recibido'}, status=200)
+        # Obtener la lista de la sesión o inicializarla si no existe
+        trait_sums = request.session.get('trait_sums', [0, 0, 0, 0, 0])
+
+        # Actualizar el valor correspondiente al rasgo
+        if trait in trait_map:
+            index = trait_map[trait]
+            trait_sums[index] += value
+
+        # Guardar la lista actualizada en la sesión
+        request.session['trait_sums'] = trait_sums
+        print("Trait sums =", trait_sums)
+        
+        if endQuestionary == 'true':
+            lastQuestion = True
+            request.session['last_question'] = lastQuestion
+            # Redirigir a la vista finalResults
+            return HttpResponseRedirect(reverse('resultados'))      # Ajusta según tus URLs y nombres de vista
+        else:
+            lastQuestion = False
+            request.session['last_question'] = lastQuestion
+            # Devolver una respuesta de éxito
+            return JsonResponse({'message': 'Valor recibido'}, status=200)
 
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+def finalResults(request):
+    if request.session.get('results_processed', False): # verificamos si los resultados ya fueron procesados
+        # si ya se procesaron los resultados del usuario obtenemos los datos de la sesión y renderizamos la plantilla de resultados (results.html)
+        careerSuggestion = request.session.get('career_suggestion', [])
+        userName = request.session.get('userNameFinal', '')
+        avatar = request.session.get('userAvatarFinal', '')
+        userCareerDetails = showCareerDetails(careerSuggestion)
+        if avatar == 'bob':
+            userAvatar = '/static/img/bob-avatar-pq.png'
+        else:
+            userAvatar = '/static/img/alice-avatar-pq.png'
+        context = {
+            'userName': userName,
+            'careerDetails': userCareerDetails,
+            'userAvatar': userAvatar
+        }
+        return render(request, 'results.html', context)
+        # response = render(request, 'results.html', context)
+        # request.session.flush()
+        # return response
+    
+    trait_sums = request.session.get('trait_sums', []) # obtenemos los valores obtenidos por el usuario para cada rasgo en base a la escala de Likert
+    last_question = request.session.get('last_question') # variable para saber si el usuario respondió a la última pregunta
+    rasgos = ["Apertura a la experiencia", "Conciencia", "Extraversión", "Amabilidad", "Neuroticismo"] # rasgos de personalidad
+    userName = request.session.get('userNameFinal', '') # obtenemos el nombre de usuario
+    avatar = request.session.get('userAvatarFinal', '')
+    # Imprimir información de depuración
+    print(request.session.keys())
+    print("Valor de trait_sums: ", trait_sums)
+    print("Valor de last_question: ", last_question)
+    if last_question is True:
+        print("Valor de last_question dentro del if: ", last_question)
+        totalQuestions = int(sum(len(preguntas) for preguntas in questionList.values())) # obtenemos el total de preguntas almacenadas en el array de preguntas
+        personalidadPorcentaje = dict(zip(rasgos, convertirPorcentaje(trait_sums, totalQuestions))) # construimos el formato de los resultados del usuario con sus rasgos
+        request.session['personalidad_porcentaje'] = personalidadPorcentaje # guardamos en sesión los valores de personalidad en porcentaje del usuario
+        print("personalidadPorcentaje: ", personalidadPorcentaje)
+        careerSuggestion = careerSelection(personalidadPorcentaje, careers) # llamada a función que devuelve las carreras en base a los resultados del usuario
+        userCareerDetails = showCareerDetails(careerSuggestion) # llamada a función que devuelve dettales de las carreras en base a los resultados del usuario
+        print("Carreras: ", careerSuggestion)
+        request.session['results_processed'] = True # marcar que los resultados ya se procesaron
+        request.session['career_suggestion'] = careerSuggestion # devuelve las carreras para vista de detalles de carreras
+        print("Avatar: ", avatar)
+        if avatar == 'bob':
+            userAvatar = '/static/img/bob-avatar-pq.png'
+        else:
+            userAvatar = '/static/img/alice-avatar-pq.png'
+        print("userAvatar: ", userAvatar)
+        context = {
+            'userName': userName,
+            'careerDetails': userCareerDetails,
+            'userAvatar': userAvatar
+        }
+        return render(request, 'results.html', context)
+        # response = render(request, 'results.html', context)
+        # request.session.flush()
+        # return response
+    else:
+        print("Valor de last_question despues del if: ", last_question)
+        return redirect('home')
+        
+        # userName = request.session['userNameFinal']
+        # userResults = {k: v[:-1] for k, v in personalidadPorcentaje.items()}
+        # colors = ['rgb(0, 187, 255)', 'rgb(136, 200, 25)', 'rgb(249, 228, 0)', 'rgb(221, 114, 0)', 'rgb(255, 0, 0)']
+        # # print(userName)
+        # rasgosData = list(zip(userResults.items(), colors))
+        # detallesRasgos = generateTraitDetails(userResults)
+        # html_content = ""
+        
+        # for (item, color), detalle in zip(rasgosData, detallesRasgos):
+        #     progress_bar = f'<h5 class="custom-title" style="text-align:left;">{item[0]}</h5>' \
+        #                 f'<div class="progress" role="progressbar" aria-valuenow="{item[0]}" aria-valuemin="0" aria-valuemax="100" style="height: 25px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);">' \
+        #                 f'  <div class="my-progress-bar" style="width: {item[1]}%; background-color: {color}; text-align: center; line-height: 25px; font-weight: bold; color: black;">' \
+        #                 f'   {item[1]}%' \
+        #                 f'  </div>' \
+        #                 f'</div>' \
+        #                 f'<p>{detalle}</p>' \
+        #                 f'<br>'
+        #     html_content += progress_bar
 
-# Definir rangos de puntajes para cada rasgo de personalidad
-traitScoreRanges = {
-    "Apertura a la experiencia": {
-        "Muy Alto": (81, 100),
-        "Alto": (61, 80),
-        "Medio": (41, 60),
-        "Bajo": (21, 40),
-        "Muy Bajo": (0, 20)
-    },
-    "Conciencia": {
-        "Muy Alto": (81, 100),
-        "Alto": (61, 80),
-        "Medio": (41, 60),
-        "Bajo": (21, 40),
-        "Muy Bajo": (0, 20)
-    },
-    "Extraversión": {
-        "Muy Alto": (81, 100),
-        "Alto": (61, 80),
-        "Medio": (41, 60),
-        "Bajo": (21, 40),
-        "Muy Bajo": (0, 20)
-    },
-    "Amabilidad": {
-        "Muy Alto": (81, 100),
-        "Alto": (61, 80),
-        "Medio": (41, 60),
-        "Bajo": (21, 40),
-        "Muy Bajo": (0, 20)
-    },
-    "Neuroticismo": {
-        "Muy Alto": (81, 100),
-        "Alto": (61, 80),
-        "Medio": (41, 60),
-        "Bajo": (21, 40),
-        "Muy Bajo": (0, 20)
+        # # Crear el contexto de la plantilla
+        # context = {
+        #     'userName': userName,
+        #     'html_content': html_content   # Agregar html_content al contexto
+        # }
+
+        # request.session['careerSuggestion'] = careerSuggestion
+    # else:
+    #     print("Valor de endQuestionary en else: ", endQuestionary)
+    #     return redirect('home')
+
+def userTraitDetails(request):
+    userName = request.session.get('userNameFinal', '') # obtenemos el nombre de usuario
+    personalidadPorcentaje = request.session.get('personalidad_porcentaje') # obtenemos los valores y rasgos del usuario
+    print("AHI ESTAAAA: ",personalidadPorcentaje)
+    colors = ['rgb(0, 187, 255)', 'rgb(136, 200, 25)', 'rgb(249, 228, 0)', 'rgb(221, 114, 0)', 'rgb(255, 0, 0)'] # colores de los rasgos
+    rasgosData = list(zip(personalidadPorcentaje.items(), colors)) # se aocian los colores con los rasgos
+    detallesRasgos = generateTraitDetails(personalidadPorcentaje) # llamada a la función para establecer la descripción de los rasgos segun porcentaje del usuario por rasgo
+    html_content = ""
+    for (item, color), detalle in zip(rasgosData, detallesRasgos):
+            progress_bar = f'<h5 class="custom-title" style="text-align:left;">{item[0]}</h5>' \
+                        f'<div class="progress" role="progressbar" aria-valuenow="{item[0]}" aria-valuemin="0" aria-valuemax="100" style="height: 25px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);">' \
+                        f'  <div class="my-progress-bar" style="width: {item[1]}%; background-color: {color}; text-align: center; line-height: 25px; font-weight: bold; color: black;">' \
+                        f'   {item[1]}%' \
+                        f'  </div>' \
+                        f'</div>' \
+                        f'<p>{detalle}</p>' \
+                        f'<br>'
+            html_content += progress_bar
+
+    # contexto de la plantilla
+    context = {
+        'userName': userName,
+        'html_content': html_content # html_content representan las barras de carga de los detalles de raagos
     }
-}
+    return render(request, 'detalles-de-rasgos.html', context)
+
+# función para convertir en porcentaje los valores obtenidos del usuario
+def convertirPorcentaje(traitSums, maximo):
+    for i in range(len(traitSums)):
+        porcentaje = (traitSums[i] / maximo) * 100
+        traitSums[i] = int(porcentaje)
+    return traitSums
 
 def careerSelection(userResults, careers):
     # Convertir los porcentajes a enteros
-    userResults = {k: int(v[:-1]) for k, v in userResults.items()}
-    print("Resultados: ", userResults)
+    #userResults = {k: int(v[:-1]) for k, v in userResults.items()}
+    # print("Resultados: ", userResults)
 
     # Crear un diccionario para almacenar las puntuaciones de las carreras
     career_scores = {career: 0 for career in careers}
@@ -372,59 +482,7 @@ def careerSelection(userResults, careers):
 
 
 
-
-def convertirPorcentaje(diccionario, maximo):
-    for clave in diccionario:
-        porcentaje = (diccionario[clave] / maximo) * 100
-        diccionario[clave] = f'{porcentaje:.0f}%'
-    return diccionario
-
-def finalResults(request):
-    trait_sums = request.session.get('trait_sums', [])
-    endQuestionary = request.session.get('end_questionary')
-    defaultTrait = ["Apertura a la experiencia", "Conciencia", "Extraversión", "Amabilidad", "Neuroticismo"]
-    print("HOLAAA ", endQuestionary)
-    if all(trait_sums[key] != 0 for key in defaultTrait) and endQuestionary is not False:
-        # Si endQuestionary no es False, proceder con el procesamiento normal
-        
-        print("Suma de los puntajes por rasgo en porcentaje: ", trait_sums)
-
-        personalidadPorcentaje = convertirPorcentaje(trait_sums, 30)
-        print(personalidadPorcentaje)
-
-        print("Resultados finales: ", careerSelection(personalidadPorcentaje, careers))
-        careerSuggestion = careerSelection(personalidadPorcentaje, careers)
-        userName = request.session['userNameFinal']
-        userResults = {k: v[:-1] for k, v in personalidadPorcentaje.items()}
-        colors = ['rgb(0, 187, 255)', 'rgb(136, 200, 25)', 'rgb(249, 228, 0)', 'rgb(221, 114, 0)', 'rgb(255, 0, 0)']
-        print(userName)
-        rasgosData = list(zip(userResults.items(), colors))
-        detallesRasgos = generateTraitDetails(userResults)
-        html_content = ""
-        
-        for (item, color), detalle in zip(rasgosData, detallesRasgos):
-            progress_bar = f'<h5 class="custom-title" style="text-align:left;">{item[0]}</h5>' \
-                        f'<div class="progress" role="progressbar" aria-valuenow="{item[0]}" aria-valuemin="0" aria-valuemax="100" style="height: 25px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);">' \
-                        f'  <div class="my-progress-bar" style="width: {item[1]}%; background-color: {color}; text-align: center; line-height: 25px; font-weight: bold; color: black;">' \
-                        f'   {item[1]}%' \
-                        f'  </div>' \
-                        f'</div>' \
-                        f'<p>{detalle}</p>' \
-                        f'<br>'
-            html_content += progress_bar
-
-        # Crear el contexto de la plantilla
-        context = {
-            'userName': userName,
-            'html_content': html_content   # Agregar html_content al contexto
-        }
-
-        request.session['careerSuggestion'] = careerSuggestion
-
-        return render(request, 'results.html', context)
-    else:
-        return redirect('registration')
-
+# función para devolver los datelles de los rasgos
 def generateTraitDetails(userResults):
     detail = []
     for rasgo, valor in userResults.items():
@@ -438,10 +496,17 @@ def generateTraitDetails(userResults):
     # Devuelve el array de detalles por cada rasgo
     return detail
 
+# vista donde se muestran los detalles de las carreras
 def careerDetails(request):
-    careerSuggestion = request.session.get('careerSuggestion', [])
+    careerSuggestion = request.session.get('career_suggestion', [])
+    career_details = showCareerDetails(careerSuggestion)
+    print(career_details)
+
+    return render(request, 'detalles-de-carreras.html', {'career_details': career_details})
+
+# función para mostrar detalles de las carreras
+def showCareerDetails(careerSuggestion):
     career_details = []
-    print(careerSuggestion)
 
     for careerItem in careerSuggestion:
         for information in careersInformation:
@@ -453,8 +518,7 @@ def careerDetails(request):
                     "descripcion": information["descripcion"],
                     "avatar": information["img"]
                 })
-
-    return render(request, 'detalles-de-carreras.html', {'career_details': career_details})
+    return career_details            
 
 def aboutCalculationFunction(request):
 
