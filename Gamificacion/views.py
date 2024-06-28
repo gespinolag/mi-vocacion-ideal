@@ -269,8 +269,7 @@ def questionary(request):
             userName = request.session['userName']
             request.session['userNameFinal'] = userName
             request.session['userAvatarFinal'] = avatar
-            #request.session['trait_sums'] = {0, 0, 0, 0, 0}
-            #del request.session['trait_sums']
+
             if 'trait_sums' in request.session:
                 del request.session['trait_sums']
             if avatar == 'bob':
@@ -397,47 +396,17 @@ def finalResults(request):
     else:
         print("Valor de last_question despues del if: ", last_question)
         return redirect('home')
-        
-        # userName = request.session['userNameFinal']
-        # userResults = {k: v[:-1] for k, v in personalidadPorcentaje.items()}
-        # colors = ['rgb(0, 187, 255)', 'rgb(136, 200, 25)', 'rgb(249, 228, 0)', 'rgb(221, 114, 0)', 'rgb(255, 0, 0)']
-        # # print(userName)
-        # rasgosData = list(zip(userResults.items(), colors))
-        # detallesRasgos = generateTraitDetails(userResults)
-        # html_content = ""
-        
-        # for (item, color), detalle in zip(rasgosData, detallesRasgos):
-        #     progress_bar = f'<h5 class="custom-title" style="text-align:left;">{item[0]}</h5>' \
-        #                 f'<div class="progress" role="progressbar" aria-valuenow="{item[0]}" aria-valuemin="0" aria-valuemax="100" style="height: 25px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);">' \
-        #                 f'  <div class="my-progress-bar" style="width: {item[1]}%; background-color: {color}; text-align: center; line-height: 25px; font-weight: bold; color: black;">' \
-        #                 f'   {item[1]}%' \
-        #                 f'  </div>' \
-        #                 f'</div>' \
-        #                 f'<p>{detalle}</p>' \
-        #                 f'<br>'
-        #     html_content += progress_bar
-
-        # # Crear el contexto de la plantilla
-        # context = {
-        #     'userName': userName,
-        #     'html_content': html_content   # Agregar html_content al contexto
-        # }
-
-        # request.session['careerSuggestion'] = careerSuggestion
-    # else:
-    #     print("Valor de endQuestionary en else: ", endQuestionary)
-    #     return redirect('home')
 
 def userTraitDetails(request):
+    careerSuggestion = request.session.get('career_suggestion', [])
     userName = request.session.get('userNameFinal', '') # obtenemos el nombre de usuario
     personalidadPorcentaje = request.session.get('personalidad_porcentaje') # obtenemos los valores y rasgos del usuario
-    print("AHI ESTAAAA: ",personalidadPorcentaje)
     colors = ['rgb(0, 187, 255)', 'rgb(136, 200, 25)', 'rgb(249, 228, 0)', 'rgb(221, 114, 0)', 'rgb(255, 0, 0)'] # colores de los rasgos
     rasgosData = list(zip(personalidadPorcentaje.items(), colors)) # se aocian los colores con los rasgos
     detallesRasgos = generateTraitDetails(personalidadPorcentaje) # llamada a la función para establecer la descripción de los rasgos segun porcentaje del usuario por rasgo
     html_content = ""
     for (item, color), detalle in zip(rasgosData, detallesRasgos):
-            progress_bar = f'<h5 class="custom-title" style="text-align:left;">{item[0]}</h5>' \
+            progress_bar = f'<h6 class="custom-title" style="text-align:left;">{item[0]}</h6>' \
                         f'<div class="progress" role="progressbar" aria-valuenow="{item[0]}" aria-valuemin="0" aria-valuemax="100" style="height: 25px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);">' \
                         f'  <div class="my-progress-bar" style="width: {item[1]}%; background-color: {color}; text-align: center; line-height: 25px; font-weight: bold; color: black;">' \
                         f'   {item[1]}%' \
@@ -447,10 +416,12 @@ def userTraitDetails(request):
                         f'<br>'
             html_content += progress_bar
 
+    suggestedCareers = {career: careers[career] for career in careerSuggestion if career in careers}
     # contexto de la plantilla
     context = {
         'userName': userName,
-        'html_content': html_content # html_content representan las barras de carga de los detalles de raagos
+        'html_content': html_content, # html_content representan las barras de carga de los detalles de raagos
+        'suggestedCareers': suggestedCareers # devolvemos a la plantilla las carreras con sus rasgos en base a los resultados del usuario
     }
     return render(request, 'detalles-de-rasgos.html', context)
 
@@ -461,10 +432,8 @@ def convertirPorcentaje(traitSums, maximo):
         traitSums[i] = int(porcentaje)
     return traitSums
 
+# función de calculo de carreras en base a los puntos del usuario
 def careerSelection(userResults, careers):
-    # Convertir los porcentajes a enteros
-    #userResults = {k: int(v[:-1]) for k, v in userResults.items()}
-    # print("Resultados: ", userResults)
 
     # Crear un diccionario para almacenar las puntuaciones de las carreras
     career_scores = {career: 0 for career in careers}
@@ -480,11 +449,9 @@ def careerSelection(userResults, careers):
     return [career for career, score in sorted_careers if score == sorted_careers[0][1]]
 
 
-
-
 # función para devolver los datelles de los rasgos
 def generateTraitDetails(userResults):
-    detail = []
+    detail = [] # Array de detalles por cada rasgo
     for rasgo, valor in userResults.items():
         # Verifica si el rasgo tiene definidos mensajes en el diccionario
         if rasgo in traitDetails:
@@ -493,7 +460,6 @@ def generateTraitDetails(userResults):
                 if rango[0] <= int(valor) <= rango[1]:
                     detail.append(mensaje)
                     break
-    # Devuelve el array de detalles por cada rasgo
     return detail
 
 # vista donde se muestran los detalles de las carreras
@@ -520,6 +486,7 @@ def showCareerDetails(careerSuggestion):
                 })
     return career_details            
 
+# vista pantalla función de cálculo
 def aboutCalculationFunction(request):
 
     return render(request, 'funcion-de-calculo.html')

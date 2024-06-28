@@ -1,34 +1,38 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-{% csrf_token %}
-
 <section>
     <div class="container">
-        <div class="d-flex flex-column align-items-center m-3">
-            <img src="{{userAvatar}}" alt="Avatar del usuario" style="width: 100px;">
-            <h1 class="custom-title">¡Felicidades {{userName}}!</h1>
+        <div id="results-section" style="background-color: #e4e4e4;">
+            <div class="d-flex flex-column align-items-center m-3">
+                <img src="{{userAvatar}}" alt="Avatar del usuario" style="width: 100px;">
+                <h1 class="custom-title">¡Felicidades {{userName}}!</h1>
+            </div>
+            <h5 class="custom-title">Has culminado el test satisfactoriamente. En base a tus resultados te recomendamos estas carreras:</h5>
+            <div class="mt-2 d-flex justify-content-center">
+                <ul class="list-unstyled d-flex flex-column flex-lg-row align-items-center justify-content-center">
+                    {% for career in careerDetails %}
+                        <li class="d-flex flex-column align-items-center m-3">
+                            <img src="{{ career.avatar }}" alt="Avatar de carrera" style="filter:drop-shadow(3px 5px 3px rgba(0, 0, 0, 0.2)); width: 300px; padding: 1%;">
+                            <h5 class="custom-title" style="font-weight: bold;">{{career.carrera}}</h5>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        <h5 class="custom-title">Has culminado el test satisfactoriamente. En base a tus resultados te recomendamos estas carreras:</h5>
-        <div class="mt-4 d-flex justify-content-center">
-            <ul class="list-unstyled d-flex flex-column flex-lg-row align-items-center justify-content-center">
-                {% for career in careerDetails %}
-                    <li class="d-flex flex-column align-items-center m-3">
-                        <img src="{{ career.avatar }}" alt="Avatar de carrera" style="filter:drop-shadow(3px 5px 3px rgba(0, 0, 0, 0.2)); width: 300px; padding: 2%;">
-                        <h5 class="custom-title" style="font-weight: bold;">{{career.carrera}}</h5>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>              
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-success btn-sm" id="captureBtn"><i class="bi bi-share-fill"></i> Compartir resultados</button>
+        </div>
+        <br>
         {% if careerDetails %}
             <p class="custom-title">¿Quieres conocer más detalles sobre las carreras?</p>
             <div style="display: flex; justify-content: center; align-items: center;">
-                <a class="btn btn-success custom-btn" href="{% url 'detalles-de-carreras' %}" target="_blank">Explorar carreras</a>
+                <a class="btn btn-success custom-btn" href="{% url 'detalles-de-carreras' %}">Explorar carreras</a>
             </div>
             <hr>
             <p class="custom-title">¿Quieres conocer más detalles sobre los rasgos de personalidad que presentas?</p>
             <div style="display: flex; justify-content: center; align-items: center;">
-                <a class="btn btn-success custom-btn" href="{% url 'detalles-de-rasgos-de-personalidad' %}"target="_blank">Explorar detalles</a>
+                <a class="btn btn-success custom-btn" href="{% url 'detalles-de-rasgos-de-personalidad' %}">Explorar detalles</a>
             </div>
             <br>
         {% endif %}
@@ -42,4 +46,22 @@
         </div> -->
     </div>
 </section>
+<script>
+    // compartir resultados
+    document.getElementById('captureBtn').addEventListener('click', function() {
+        console.log("hola");
+        var resultsSection = document.getElementById('results-section');
+
+        // Capturar la imagen de la sección
+        html2canvas(resultsSection, {
+            onrendered: function(canvas) {
+                var imgData = canvas.toDataURL('image/png');
+                var link = document.createElement('a');
+                link.href = imgData;
+                link.download = 'resultados.png';
+                link.click();
+            }
+        });
+    });
+</script>
 {% endblock %}

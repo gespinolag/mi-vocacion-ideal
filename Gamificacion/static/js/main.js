@@ -86,10 +86,9 @@ $(document).ready(function() {
         input.addEventListener('change', checkLikertSelection);
     });
 
-
     $('input[name="likert"]').on('change', function() {
         selectedLikertBtnValue = $(this).val();
-    });    
+    });
 
     $('#nextBtn').on('click', function() {
         if(selectedLikertBtnValue !== null){
@@ -121,5 +120,24 @@ $(document).ready(function() {
                 }
             });
         }
+    });
+
+    // compartir resultados
+    $('#captureBtn').on('click', function() {
+        console.log("hola");
+        // html2canvas(document.getElementById('results-section')).then(canvas => {
+        //     // Convertir el canvas a imagen y abrir en una nueva pestaña
+        //     var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+
+        //     // Abrir la imagen en una nueva pestaña
+        //     var newTab = window.open();
+        //     newTab.document.write('<img src="' + image + '"/>');
+
+        //     // Alternativamente, puedes descargar la imagen automáticamente
+        //     var link = document.createElement('a');
+        //     link.href = image;
+        //     link.download = 'resultados.png';
+        //     link.click();
+        // });
     });
 });

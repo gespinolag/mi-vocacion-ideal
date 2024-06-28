@@ -3,7 +3,16 @@
 {% block content %}
 <section>
     <div class="container">
-        <h1 class="custom-title">Detalles de carreras sugeridas:</h1>
+        <br>
+        <div class="alert alert-warning rounded">
+            <h3 class="custom-title">ATENCIÓN ⚠️</h3>
+            <p class="custom-title">
+                Esta aplicación no es una guía definitiva para la elección de una carrera universitaria, 
+                está creada nada más con fines académicos, basadas en los rasgos de personalidad del modelo OCEAN con algunas carreras de referencias.
+            </p>
+        </div>
+        <hr>
+        <h2 class="custom-title">Detalles de carreras sugeridas:</h2>
         <ul>
             {% for career in career_details %}
                 <li>

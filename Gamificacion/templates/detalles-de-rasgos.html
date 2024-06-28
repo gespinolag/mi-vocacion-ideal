@@ -4,20 +4,29 @@
 <section>
     <div class="container">
         <br>
-        <h3 class="custom-title">ATENCIÓN ⚠️</h3>
-        <p class="custom-title">
-            Esta aplicación no es una guía definitiva para la elección de una carrera universitaria, 
-            está creada nada más con fines académicos, basadas en los rasgos de personalidad del modelo OCEAN con algunas carreras de referencias.
-        </p>
-        <h1 class="custom-title">{{userName}}, estos son los detalles de los rasgos de personalidad basados en tu puntuación:</h1>
-        <div class="mt-4">
-            <br>
+        <div class="alert alert-warning rounded">
+            <h3 class="custom-title">ATENCIÓN ⚠️</h3>
+            <p class="custom-title">
+                Esta aplicación no es una guía definitiva para la elección de una carrera universitaria, 
+                está creada nada más con fines académicos, basadas en los rasgos de personalidad del modelo OCEAN con algunas carreras de referencias.
+            </p>
+        </div>
+        <hr>
+        <h2 class="custom-title">{{userName}}, las carreras sugeridas fueron seleccionadas en base a los rasgos de personalidad según tu puntuación:</h2>
+        <div class="row">
+            {% for career, traits in suggestedCareers.items %}
+                <p>✔️ {{ career }}: {{ traits|join:", " }}</p>
+            {% endfor %}    
+        </div>
+        <hr>
+        <h2 class="custom-title">Estos son los detalles de los rasgos de personalidad basados en tu puntuación:</h2>
+        <div class="mt-3">
             {{ html_content|safe }}
         </div>
         <hr>
         <p class="custom-title">¿Quieres conocer más sobre la aplicación y su funcionalidad?</p>
         <div style="display: flex; justify-content: center; align-items: center;">
-            <a class="btn btn-success custom-btn" href="{% url 'funcion-de-calculo' %}"target="_blank">Ver más</a>
+            <a class="btn btn-success custom-btn" href="{% url 'funcion-de-calculo' %}">Ver más</a>
         </div>
         <br>
     </div>
