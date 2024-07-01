@@ -18,8 +18,8 @@ $(document).ready(function() {
             questions = data.questions;
             totalQuestions = questions.length;
             showNextQuestion();
-            console.log(questions)
-            console.log(totalQuestions)
+            //console.log(questions)
+            //console.log(totalQuestions)
         }
     })
 
@@ -38,9 +38,9 @@ $(document).ready(function() {
         if(currentQuestionIndex < questions.length) {
             $("#question").fadeOut(400, function() {
                 $(this).text(questions[currentQuestionIndex][1]).fadeIn(400);
-                console.log("Questions: " + questions[currentQuestionIndex][1])
+                //console.log("Questions: " + questions[currentQuestionIndex][1])
                 trait = questions[currentQuestionIndex][0];
-                console.log("Rasgo: " + trait)
+                //console.log("Rasgo: " + trait)
             });
             // Guarda el rasgo de personalidad de la pregunta actual
             
@@ -101,10 +101,10 @@ $(document).ready(function() {
                     trait: trait
                 },
                 success: function(data){
-                    console.log(data)
+                    //console.log(data)
                     // console.log("Valor de Likert: " + selectedLikertBtnValue)
-                    console.log("Numero de pregunta: " + currentQuestionIndex)
-                    console.log("Mitad de preguntas: " + questions.length/2);
+                    //console.log("Numero de pregunta: " + currentQuestionIndex)
+                    //console.log("Mitad de preguntas: " + questions.length/2);
                     // console.log("Rasgo de la pregunta: " + trait)
                     var estrellaImg = document.getElementById("starimg");
                     var star1 = estrellaImg.getAttribute("data-star1");
@@ -120,24 +120,5 @@ $(document).ready(function() {
                 }
             });
         }
-    });
-
-    // compartir resultados
-    $('#captureBtn').on('click', function() {
-        console.log("hola");
-        // html2canvas(document.getElementById('results-section')).then(canvas => {
-        //     // Convertir el canvas a imagen y abrir en una nueva pestaña
-        //     var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-
-        //     // Abrir la imagen en una nueva pestaña
-        //     var newTab = window.open();
-        //     newTab.document.write('<img src="' + image + '"/>');
-
-        //     // Alternativamente, puedes descargar la imagen automáticamente
-        //     var link = document.createElement('a');
-        //     link.href = image;
-        //     link.download = 'resultados.png';
-        //     link.click();
-        // });
     });
 });

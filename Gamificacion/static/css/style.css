@@ -172,11 +172,3 @@ div.progress.progress-color-transition::before {
     content: attr(data-width) '%';
     width: attr(data-width) '%';
 }
-
-.alert-box {
-    background-color: #cccccc;
-    border: 1px solid #999999;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
