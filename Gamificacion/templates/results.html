@@ -6,7 +6,7 @@
         <div id="results-section" style="background-color: #e4e4e4;">
             <div class="d-flex flex-column align-items-center m-3">
                 <img src="{{userAvatar}}" alt="Avatar del usuario" style="width: 100px;">
-                <h1 class="custom-title">¡Felicidades {{userName}}!</h1>
+                <h1 class="custom-title">¡Felicidades <span id="userNameSpan">{{userName}}</span>!</h1>
             </div>
             <h5 class="custom-title">Has culminado el test satisfactoriamente. En base a tus resultados te recomendamos estas carreras:</h5>
             <div class="mt-2 d-flex justify-content-center">
@@ -20,8 +20,9 @@
                 </ul>
             </div>            
         </div>
+        <p class="custom-title">¿Quieres compartir los resultados con tus amigos?</p>
         <div class="text-center mt-4">
-            <button type="button" class="btn btn-success btn-sm" id="captureBtn"><i class="bi bi-share-fill"></i> Compartir resultados</button>
+            <button type="button" class="btn btn-success btn-sm" id="captureBtn"><i class="bi bi-download"></i> Descargar Resultados</button>
         </div>
         <br>
         {% if careerDetails %}
@@ -36,27 +37,20 @@
             </div>
             <br>
         {% endif %}
-        <!-- <p class="custom-title">De acuerdo a los resultados, estos son algunos detalles de los rasgos de personalidad que presentas:</p>
-        <div class="mt-4">
-            
-            <br>
-            {{ html_content|safe }}
-
-            
-        </div> -->
     </div>
 </section>
 <script>
     // compartir resultados
     document.getElementById('captureBtn').addEventListener('click', function() {
         var resultsSection = document.getElementById('results-section');
+        var userName = document.getElementById('userNameSpan').textContent;
 
         // Capturar la imagen de la sección
         html2canvas(resultsSection).then(function(canvas) {
             var imgData = canvas.toDataURL('image/png');
             var link = document.createElement('a');
             link.href = imgData;
-            link.download = 'resultados.png';
+            link.download = 'Resultados-' + userName + '.png';
             link.click();
         });
     });
